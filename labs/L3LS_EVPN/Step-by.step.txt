@@ -1,0 +1,177 @@
+git config --global user.name “Torben Ramsing”
+git config --global user.email “Torben@arista.com”
+sudo apt install update && upgrade
+sudo apt install python3 python3-pip –yes
+pip3 install ansible-core
+ansible-galaxy collection install arista.avd
+git clone https://github.com/aristanetworks/ci-workshops-avd.git
+cd ci-workshops-avd/
+pip3 install -r requirements.txt
+ansible-galaxy collection install -r requirements.yml			Udføres I /home/coder/project/ci-workshops-avd
+cd labs/L3LS_EVPN
+Opret service account I CVaaS
+			Paste token into /home/coder/project/ci-workshops-avd/labs/L3LS_EVPN/global_dc_vars.yml
+export CV_TOKEN= paste 
+
+LAB   https://labguides.testdrive.arista.com/2025.3/automation/ci_avd_l3ls/day0/#step-1-prepare-lab-environment
+Cd ..
+cd L3LS_EVPN 
+make preplab
+make build-site-1
+make build-site-2
+make deploy-site-1 (make cvp-site-1)
+make deploy-site-2 (make cvp-site-2)
+
+
+Open sites/site_1/group_vars/SITE1_NETWORK_SERVICES.yml and uncomment lines 1-16, then run the build & deploy process again. (NOT line1 )(File in dir)
+make build-site-1
+make deploy-site-1 (make cvp-site-1)
+
+Open SITE1_CONNECTED_ENDPOINTS.yml and uncomment lines 17-45, then run the build & deploy process again. (File in dir)
+make build-site-1
+make deploy-site-1 (make cvp-site-1)
+
+Open sites/site_2/group_vars/SITE2_NETWORK_SERVICES.yml and uncomment lines 1-16, then run the build & deploy process again. (NOT line1 )(File in dir)
+make build-site-2
+make deploy-site-2 (make cvp-site-2)
+
+Open SITE2_CONNECTED_ENDPOINTS.yml and uncomment lines 17-45, then run the build & deploy process again. (File in dir)(File in dir)
+make build-site-2
+make deploy-site-2 (make cvp-site-2)
+
+Edit /home/coder/project/ci-workshops-avd/labs/L3LS_EVPN/global_vars/global_dc_vars.yml (File in dir)
+Und-rem line 77-97 (line 77 to first cullun)
+make all
+
+Edit sites/site_1/group_vars/SITE1_FABRIC.yml
+Un-rem line 58-63 and 69-73 and 78-82 (File in dir)
+
+Edit sites/site_2/group_vars/SITE2_FABRIC.yml
+Un-rem line 58-63 and 69-73 and 78-82 (File in dir)
+
+make all
+
+
+
+********************************************
+********’ DAY 2 Operations *****************
+********************************************
+
+
+git add .
+git commit -m 'Your message here'
+
+git push
+
+Allow access to, copy code and past in app
+
+
+Edit global_vars/global_dc_vars.yml
+Add this to the file
+# Login Banner
+
+custom_structured_configuration_banners:
+
+  motd: |
+
+    You shall not pass. Unless you are authorized. Then you shall pass.
+
+    EOF
+
+make build-site-1 build-site-2
+
+git add .
+git commit -m 'add banner'
+
+Edit global_vars/global_dc_vars.yml
+Add this to the file
+# Syslog
+logging_settings:
+  hosts:
+    - name: 10.200.0.108
+    - name: 10.200.1.108
+  vrfs:
+    - name: default
+
+make build-site-1 build-site-2
+
+git add .
+git commit -m 'add syslog'
+git push --set-upstream origin banner-syslog
+
+in both SITE1_NETWORK_SERVICES.yml and SITE2_NETWORK_SERVICES.yml. Ensure the -id: entries all line up.
+
+          - id: 30
+            name: 'Thirty'
+            enabled: true
+            ip_address_virtual: 10.30.30.1/24
+          - id: 40
+            name: 'Forty'
+            enabled: true
+            ip_address_virtual: 10.40.40.1/24
+
+make all
+
+Adding Leafs
+
+Add the following two lines under s1-brdr2 in sites/site_1/inventory.yml.
+            s1-leaf5:
+            s1-leaf6:
+
+make build-site-1
+
+********************************************
+********    ANTA.          *****************
+********************************************
+
+LAB:	https://labguides.testdrive.arista.com/2025.3/automation/validation/overview/
+And 	https://labguides.testdrive.arista.com/2025.3/automation/validation/anta_validate/
+
+
+cd labs/NET_TESTING
+
+make preplab build-site-1 build-site-2 deploy-site-1 deploy-site-2
+
+make anta-inv-site-1
+
+make anta-inv-site-2
+
+anta nrfu  -u arista -p hqfhsoy9alkyen5c -i sites/site_1/anta_inventory.yml -c tests/all.yml table
+
+If error
+TerminAttr version mismatch - Actual: v1.42.0 not in Expected: v1.32.0, v1.35.0 
+Edit tests/all.yml and add
+
+anta.tests.software:
+
+    - VerifyTerminAttrVersion:
+        versions:
+        - v1.32.0
+        - v1.42.0 
+
+
+anta nrfu -u arista -p hqfhsoy9alkyen5c  -i sites/site_1/anta_inventory.yml -c tests/all.yml table  --group-by device
+ 
+
+New lab https://labguides.testdrive.arista.com/2025.3/automation/validation/avd_validate/#step-1-avd-validate-state
+
+make validate-site-1
+
+make validate-site-2
+
+Find report in
+sites/site_1/anta/reports/anta_report.md
+
+
+***********************
+My GitHub
+https://github.com/TorbenRamsing/
+
+https://github.com/TorbenRamsing/MLAG
+
+Git put https://github.com/TorbenRamsing/AVD-DEMO
+
+
+Git clone https://github.com/TorbenRamsing/AVD-DEMO
+git clone https://github.com/aristanetworks/ci-workshops-avd.git
+
