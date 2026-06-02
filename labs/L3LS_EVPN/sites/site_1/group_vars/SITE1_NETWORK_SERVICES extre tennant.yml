@@ -1,0 +1,31 @@
+# ---
+ tenants:
+   - name: S1_FABRIC
+     mac_vrf_vni_base: 10000
+     vrfs:
+       - name: OVERLAY
+         vrf_vni: 10
+         svis:
+           - id: 10
+             name: 'Ten'
+             enabled: true
+             ip_address_virtual: 10.10.10.1/24
+           - id: 20
+             name: 'Twenty'
+             enabled: true
+             ip_address_virtual: 10.20.20.1/24
+   - name: S4_FABRIC
+     mac_vrf_vni_base: 10001
+     vrfs:
+       - name: OVERLAY1
+         vrf_vni: 101
+         svis:
+           - id: 101
+             name: 'Ten'
+             enabled: true
+             ip_address_virtual: 10.10.10.1/24
+           - id: 201
+             name: 'Twenty'
+             enabled: true
+             ip_address_virtual: 10.20.20.1/24
+
